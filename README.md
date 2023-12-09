@@ -5,3 +5,59 @@
 ![Swift Package Manager](https://img.shields.io/badge/Swift_Package_Manager-compatible-orange?style=flat-square)
 
 FlowKit is UIKit based navigation library for SwiftUI.
+
+## Requirements
+| Platform | Minimum Swift Version | Installation |
+| --- | --- | --- |
+| iOS 13.0+ | 5.5 | [Swift Package Manager](#swift-package-manager) |
+
+## Installation
+### Swift Package Manager
+- `File` -> `Add Packages...` And paste the repository URL.
+- Or add it to the `dependencies` value of your `Package.swift`.
+```swift
+dependencies: [
+    .package(url: "https://github.com/Mercen-Lee/FlowKit.git", .branch("main"))
+]
+```
+
+## Example
+### App
+```swift
+import SwiftUI
+import FlowKit
+
+// Global Variable
+let flow: Flow = .init(rootView: ContentView())
+
+@main
+struct SampleApp: App {
+  var body: some Scene {
+    WindowGroup {
+      FlowView(flow: flow)
+    }
+  }
+}
+```
+### View
+```swift
+struct ContentView: View {
+  var body: some View {
+    Button {
+      flow.push(NextView())
+    } label: {
+      Text("Push")
+    }
+  }
+}
+
+struct NextView: View {
+  var body: some View {
+    Button {
+      flow.pop()
+    } label: {
+      Text("Pop")
+    }
+  }
+}
+```
