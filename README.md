@@ -3,8 +3,11 @@
 ![Swift](https://img.shields.io/badge/Swift-5.5_5.6_5.7_5.8-Orange?style=flat-square)
 ![Platforms](https://img.shields.io/badge/Platforms-iOS-yellowgreen?style=flat-square)
 ![Swift Package Manager](https://img.shields.io/badge/Swift_Package_Manager-compatible-orange?style=flat-square)
+![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
 
-FlowKit is UIKit based navigation library for SwiftUI.
+> SwiftUI is great. But navigation isn't.
+
+FlowKit is **the ideal navigation library** for SwiftUI.
 
 ## Requirements
 | Platform | Minimum Swift Version | Installation |
@@ -17,8 +20,29 @@ FlowKit is UIKit based navigation library for SwiftUI.
 - Or add it to the `dependencies` value of your `Package.swift`.
 ```swift
 dependencies: [
-    .package(url: "https://github.com/Mercen-Lee/FlowKit.git", .branch("main"))
+  .package(url: "https://github.com/Mercen-Lee/FlowKit.git", .branch("main"))
 ]
+```
+
+## Usage
+```swift
+let flow: Flow = .init(rootView: ContentView())
+```
+- **Push View**
+```swift
+flow.push(NextView())
+```
+- **Pop View**
+```swift
+flow.pop()
+```
+- **Pop View to Root**
+```swift
+flow.popToRoot()
+```
+- **Present Sheet**
+```swift
+flow.sheet(SheetView())
 ```
 
 ## Example
