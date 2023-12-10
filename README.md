@@ -58,7 +58,7 @@ let flow: Flow = .init(rootView: ContentView())
 struct SampleApp: App {
   var body: some Scene {
     WindowGroup {
-      FlowView(flow: flow)
+      flow.present()
     }
   }
 }
