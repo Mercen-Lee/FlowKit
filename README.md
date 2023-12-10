@@ -25,9 +25,6 @@ dependencies: [
 ```
 
 ## Usage
-```swift
-let flow: Flow = .init(rootView: ContentView())
-```
 - **Push View**
 ```swift
 flow.push(NextView())
@@ -51,14 +48,11 @@ flow.sheet(SheetView())
 import SwiftUI
 import FlowKit
 
-// Global Variable
-let flow: Flow = .init(rootView: ContentView())
-
 @main
 struct SampleApp: App {
   var body: some Scene {
     WindowGroup {
-      flow.present()
+      FlowPresenter(rootView: ContentView())
     }
   }
 }
@@ -66,6 +60,7 @@ struct SampleApp: App {
 ### View
 ```swift
 struct ContentView: View {
+  @Flow var flow
   var body: some View {
     Button {
       flow.push(NextView())
@@ -76,6 +71,7 @@ struct ContentView: View {
 }
 
 struct NextView: View {
+  @Flow var flow
   var body: some View {
     Button {
       flow.pop()

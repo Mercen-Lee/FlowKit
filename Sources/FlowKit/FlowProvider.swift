@@ -1,22 +1,18 @@
 import SwiftUI
 
 @available(iOS 13, *)
-public final class Flow {
+public final class FlowProvider: ObservableObject {
   
   var navigationController: UINavigationController
-  private var presenter: Presenter
+  var presenter: Presenter
   
-  public init<C: View>(rootView: C) {
+  init<C: View>(rootView: C) {
     let hostingController = UIHostingController(rootView: rootView)
     navigationController = UINavigationController(rootViewController: hostingController)
     presenter = Presenter(navigationController: navigationController)
   }
   
-  public func present() -> some View {
-    presenter
-  }
-  
-  private struct Presenter: UIViewControllerRepresentable {
+  struct Presenter: UIViewControllerRepresentable {
     
     var navigationController: UINavigationController
     
