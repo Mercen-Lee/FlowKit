@@ -10,7 +10,7 @@ public struct FlowPresenter<C: View>: View {
   }
   
   public var body: some View {
-    flow.presenter
+    flow.present()
       .environmentObject(flow)
   }
 }

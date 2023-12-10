@@ -4,18 +4,18 @@
 import PackageDescription
 
 let package = Package(
-    name: "FlowKit",
-    platforms: [.iOS(.v13)],
-    products: [
-        .library(
-            name: "FlowKit",
-            targets: ["FlowKit"]),
-    ],
-    dependencies: [
-    ],
-    targets: [
-        .target(
-            name: "FlowKit",
-            dependencies: [])
-    ]
+  name: "FlowKit",
+  platforms: [.iOS(.v13)],
+  products: [
+    .library(
+      name: "FlowKit",
+      targets: ["FlowKit"]),
+  ],
+  dependencies: [
+  ],
+  targets: [
+    .target(
+      name: "FlowKit",
+      dependencies: [])
+  ]
 )

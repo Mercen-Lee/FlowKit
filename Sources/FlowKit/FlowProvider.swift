@@ -6,10 +6,14 @@ public final class FlowProvider: ObservableObject {
   var navigationController: UINavigationController
   var presenter: Presenter
   
-  init<C: View>(rootView: C) {
+  public init<C: View>(rootView: C) {
     let hostingController = UIHostingController(rootView: rootView)
     navigationController = UINavigationController(rootViewController: hostingController)
     presenter = Presenter(navigationController: navigationController)
+  }
+  
+  public func present() -> some View {
+    presenter
   }
   
   struct Presenter: UIViewControllerRepresentable {
