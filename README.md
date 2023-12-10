@@ -81,3 +81,27 @@ struct NextView: View {
   }
 }
 ```
+
+## [TCA](https://github.com/pointfreeco/swift-composable-architecture) Example
+### Dependency
+```swift
+struct FlowDependency: DependencyKey {
+  static var liveValue: FlowProvider {
+    FlowProvider(rootView: ContentView())
+  }
+}
+
+extension DependencyValues {
+  var flow: FlowProvider {
+    get { self[FlowDependency.self] }
+    set { self[FlowDependency.self] = newValue }
+  }
+}
+```
+### Reducer
+```swift
+struct Content: Reducer {
+  @Dependency(\.flow) var flow
+  ...
+}
+```
