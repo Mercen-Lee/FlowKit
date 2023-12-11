@@ -26,4 +26,9 @@ public extension FlowProvider {
   func sheet<C: View>(_ view: C) {
     navigationController.present(_wrap(view), animated: true)
   }
+  
+  // MARK: - Alert
+  func alert(_ alert: Alert) {
+    navigationController.present(alert.toAlertController(), animated: true)
+  }
 }

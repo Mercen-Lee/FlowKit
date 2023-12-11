@@ -41,6 +41,13 @@ flow.popToRoot()
 ```swift
 flow.sheet(SheetView())
 ```
+- **Present Alert**
+```swift
+let alert = Alert(title: "Error",
+                  message: "Not Found",
+                  dismissButton: .default("Ok"))
+flow.alert(alert)
+```
 
 ## Example
 ### App
