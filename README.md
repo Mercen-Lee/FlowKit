@@ -44,6 +44,10 @@ flow.popToRoot()
 ```swift
 flow.replace([FirstView(), SecondView()])
 ```
+- **Reload View**
+```swift
+flow.reload()
+```
 - **Present Sheet**
 ```swift
 flow.sheet(SheetView())
