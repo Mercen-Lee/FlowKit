@@ -28,14 +28,21 @@ dependencies: [
 - **Push View**
 ```swift
 flow.push(NextView())
+// or
+flow.push(NextView(), animated: false)
 ```
 - **Pop View**
 ```swift
 flow.pop()
+flow.pop(3) // 3 Views
 ```
 - **Pop View to Root**
 ```swift
 flow.popToRoot()
+```
+- **Replace Views**
+```swift
+flow.replace([FirstView(), SecondView()])
 ```
 - **Present Sheet**
 ```swift

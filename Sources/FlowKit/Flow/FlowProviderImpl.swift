@@ -8,27 +8,40 @@ public extension FlowProvider {
   }
   
   // MARK: - Push View
-  func push<C: View>(_ view: C) {
-    navigationController.pushViewController(_wrap(view), animated: true)
+  func push<C: View>(_ view: C, animated: Bool = true) {
+    navigationController.pushViewController(_wrap(view), animated: animated)
   }
   
   // MARK: - Pop View
-  func pop() {
-    navigationController.popViewController(animated: true)
+  func pop(animated: Bool = true) {
+    navigationController.popViewController(animated: animated)
+  }
+  
+  // MARK: - Pop View with Specific Count
+  func pop(_ count: Int, animated: Bool = true) {
+    let viewControllers = self.navigationController.viewControllers
+    let index = viewControllers[viewControllers.count - count]
+    navigationController.popToViewController(index, animated: animated)
   }
   
   // MARK: - Pop View to Root
-  func popToRoot() {
-    navigationController.popToRootViewController(animated: true)
+  func popToRoot(animated: Bool = true) {
+    navigationController.popToRootViewController(animated: animated)
+  }
+  
+  // MARK: - Replace View
+  func replace<C: View>(_ views: [C], animated: Bool = true) {
+    let viewControllers = views.map { _wrap($0) }
+    navigationController.setViewControllers(viewControllers, animated: animated)
   }
   
   // MARK: - Sheet
-  func sheet<C: View>(_ view: C) {
-    navigationController.present(_wrap(view), animated: true)
+  func sheet<C: View>(_ view: C, animated: Bool = true) {
+    navigationController.present(_wrap(view), animated: animated)
   }
   
   // MARK: - Alert
-  func alert(_ alert: Alert) {
-    navigationController.present(alert.toAlertController(), animated: true)
+  func alert(_ alert: Alert, animated: Bool = true) {
+    navigationController.present(alert.toAlertController(), animated: animated)
   }
 }
