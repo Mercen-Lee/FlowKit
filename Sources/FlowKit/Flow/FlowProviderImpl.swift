@@ -38,9 +38,12 @@ public extension FlowProvider {
   // MARK: - Reload View
   func reload(animated: Bool = false) {
     let lastViewController = navigationController.topViewController
-    pop(animated: animated)
+    var currentViewControllers: [UIViewController] {
+      navigationController.viewControllers.dropLast()
+    }
     if let lastViewController {
-      navigationController.pushViewController(lastViewController, animated: animated)
+      let viewControllers = currentViewControllers + [lastViewController]
+      navigationController.setViewControllers(viewControllers, animated: animated)
     }
   }
   
@@ -54,7 +57,7 @@ public extension FlowProvider {
     navigationController.present(alert.toAlertController(), animated: animated)
   }
   
-  // MARK: Exit
+  // MARK: - Exit
   func exit(_ animated: Bool = true) {
     if animated {
       UIApplication.shared.perform(#selector(NSXPCConnection.suspend))
