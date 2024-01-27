@@ -1,5 +1,7 @@
 import SwiftUI
 
+public typealias NavigationControllerSettings = ((UIViewController) -> UINavigationController)
+
 @available(iOS 13, *)
 public final class FlowProvider: ObservableObject {
   
@@ -7,7 +9,7 @@ public final class FlowProvider: ObservableObject {
   var presenter: Presenter
   
   public init<C: View>(rootView: C,
-                       customNavigationController: ((UIViewController) -> UINavigationController)? = nil) {
+                       customNavigationController: NavigationControllerSettings? = nil) {
     let hostingController = UIHostingController(rootView: rootView)
     navigationController = {
       if let navigationController = customNavigationController?(hostingController) {
