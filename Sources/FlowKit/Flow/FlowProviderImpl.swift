@@ -52,6 +52,13 @@ public extension FlowProvider {
     navigationController.present(_wrap(view), animated: animated)
   }
   
+  // MARK: - FullScreenCover
+  func fullScreenCover<C: View>(_ view: C, animated: Bool = true) {
+    let viewController = _wrap(view)
+    viewController.modalPresentationStyle = .fullScreen
+    navigationController.present(viewController, animated: animated)
+  }
+  
   // MARK: - Alert
   func alert(_ alert: Alert, animated: Bool = true) {
     navigationController.present(alert.toAlertController(), animated: animated)
