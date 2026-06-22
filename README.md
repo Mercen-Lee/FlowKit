@@ -1,23 +1,27 @@
 ![FlowKit](https://raw.githubusercontent.com/Mercen-Lee/FlowKit/main/Resources/FlowKitLogo.svg)
 
-![Swift](https://img.shields.io/badge/Swift-5.5_5.6_5.7_5.8-Orange?style=flat-square)
+![Swift](https://img.shields.io/badge/Swift-5.5%2B-Orange?style=flat-square)
 ![Platforms](https://img.shields.io/badge/Platforms-iOS-yellowgreen?style=flat-square)
 ![Swift Package Manager](https://img.shields.io/badge/Swift_Package_Manager-compatible-orange?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)
 
 > SwiftUI is great. But navigation isn't.
 
-FlowKit is **the ideal navigation library** for SwiftUI.
+FlowKit is a lightweight UIKit-backed navigation helper for SwiftUI.
 
 ## Requirements
-| Platform | Minimum Swift Version | Installation |
-| --- | --- | --- |
-| iOS 13.0+ | 5.5 | [Swift Package Manager](#swift-package-manager) |
+
+| Platform  | Minimum Swift Version | Installation                                    |
+| --------- | --------------------- | ----------------------------------------------- |
+| iOS 13.0+ | 5.5                   | [Swift Package Manager](#swift-package-manager) |
 
 ## Installation
+
 ### Swift Package Manager
+
 - `File` -> `Add Packages...` And paste the repository URL.
 - Or add it to the `dependencies` value of your `Package.swift`.
+
 ```swift
 dependencies: [
   .package(url: "https://github.com/Mercen-Lee/FlowKit.git", .branch("main"))
@@ -25,7 +29,9 @@ dependencies: [
 ```
 
 ## Usage
+
 - **Push View**
+
 ```swift
 flow.push(NextView())
 // or
@@ -34,16 +40,22 @@ flow.push(NextView(), animated: false)
 flow.push(NextView(), preserveTabBar: true)
 flow.tabPush(NextView())
 ```
+
 - **Pop View**
+
 ```swift
 flow.pop()
-flow.pop(3) // 3 Views
+flow.pop(3) // Removes up to 3 views, clamped at the root view.
 ```
+
 - **Pop View to Root**
+
 ```swift
 flow.popToRoot()
 ```
+
 - **Replace Views**
+
 ```swift
 flow.replace([StepView(index: 1), StepView(index: 2)])
 // Heterogeneous view types can use the builder, variadic overloads, or AnyView.
@@ -54,34 +66,47 @@ flow.replace {
 flow.replace(FirstView(), SecondView())
 flow.replace([AnyView(FirstView()), AnyView(SecondView())])
 ```
+
 - **Switch Views**
+
 ```swift
 flow.switchToView(at: 0)
 flow.moveView(from: 0, to: 2)
 flow.moveTopView(to: 0)
 ```
+
 - **Reload View**
+
 ```swift
 flow.reload()
 ```
+
 - **Navigation Bar**
+
 ```swift
 FlowPresenter(rootView: ContentView(), navigationBarHidden: true)
 flow.hideNavigationBar()
 flow.showNavigationBar()
 ```
+
 - **Present Sheet**
+
 ```swift
 flow.sheet(SheetView())
+flow.fullScreenCover(FullScreenView())
 ```
+
 - **Present Alert**
+
 ```swift
 let alert = Alert(title: "Error",
                   message: "Not Found",
                   dismissButton: .default("Ok"))
 flow.alert(alert)
 ```
+
 - **Deep Link**
+
 ```swift
 flow.registerDeepLink(.init(path: "/details") { url, flow in
   flow.push(DetailView())
@@ -91,7 +116,9 @@ flow.openDeepLink(URL(string: "myapp://host/details")!)
 ```
 
 ## Example
+
 ### App
+
 ```swift
 import SwiftUI
 import FlowKit
@@ -105,7 +132,9 @@ struct SampleApp: App {
   }
 }
 ```
+
 ### View
+
 ```swift
 struct ContentView: View {
   @Flow var flow
@@ -134,8 +163,25 @@ struct NextView: View {
 SwiftUI views can use `@Flow` without retaining the provider as an
 `EnvironmentObject`.
 
+FlowPresenter keeps the backing provider alive with SwiftUI state, which avoids
+resetting the navigation controller when the presenter view is rebuilt. Navigation
+commands target the active navigation controller, including the selected tab when
+FlowKit is embedded in a tab bar. Sheets, full-screen covers, and alerts are
+presented from the top-most visible view controller.
+
+## Development
+
+FlowKit depends on UIKit, so build it for an iOS destination instead of running a
+plain macOS `swift test`.
+
+```bash
+xcodebuild -scheme FlowKit -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO build
+```
+
 ## [TCA](https://github.com/pointfreeco/swift-composable-architecture) Example
+
 ### Dependency
+
 ```swift
 struct FlowDependency: DependencyKey {
   static var liveValue: FlowProvider {
@@ -150,7 +196,9 @@ extension DependencyValues {
   }
 }
 ```
+
 ### Reducer
+
 ```swift
 struct Content: Reducer {
   @Dependency(\.flow) var flow

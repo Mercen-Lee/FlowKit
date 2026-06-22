@@ -27,6 +27,32 @@ public extension FlowProvider {
     return navigationController
   }
 
+  fileprivate func _activeNavigationController(from sourceViewController: UIViewController? = nil) -> UINavigationController {
+    _navigationController(from: sourceViewController, preferSelectedTab: true)
+  }
+
+  fileprivate func _topMostViewController(from viewController: UIViewController) -> UIViewController {
+    if let presentedViewController = viewController.presentedViewController {
+      return _topMostViewController(from: presentedViewController)
+    }
+
+    if let navigationController = viewController as? UINavigationController,
+       let visibleViewController = navigationController.visibleViewController {
+      return _topMostViewController(from: visibleViewController)
+    }
+
+    if let tabBarController = viewController as? UITabBarController,
+       let selectedViewController = tabBarController.selectedViewController {
+      return _topMostViewController(from: selectedViewController)
+    }
+
+    return viewController
+  }
+
+  fileprivate func _presentingViewController() -> UIViewController {
+    _topMostViewController(from: _activeNavigationController())
+  }
+
   // MARK: - Push View
   func push<C: View>(_ view: C,
                      animated: Bool = true,
@@ -43,45 +69,44 @@ public extension FlowProvider {
                      preserveTabBar: Bool = true) {
     let viewController = _wrap(view)
     viewController.hidesBottomBarWhenPushed = !preserveTabBar
-    _navigationController(from: sourceViewController)
+    _activeNavigationController(from: sourceViewController)
       .pushViewController(viewController, animated: animated)
   }
 
   func tabPush<C: View>(_ view: C, animated: Bool = true) {
-    let viewController = _wrap(view)
-    viewController.hidesBottomBarWhenPushed = false
-    _navigationController(preferSelectedTab: true)
-      .pushViewController(viewController, animated: animated)
+    push(view, animated: animated, preserveTabBar: true)
   }
 
   // MARK: - Pop View
   func pop(animated: Bool = true) {
-    navigationController.popViewController(animated: animated)
+    _activeNavigationController().popViewController(animated: animated)
   }
 
   // MARK: - Pop View with Specific Count
   func pop(_ count: Int, animated: Bool = true) {
+    let navigationController = _activeNavigationController()
     let viewControllers = navigationController.viewControllers
-    if count > 0, count < viewControllers.count {
-      let index = viewControllers[viewControllers.count - count]
-      navigationController.popToViewController(index, animated: animated)
-    }
+    let maximumPopCount = viewControllers.count - 1
+    guard count > 0, maximumPopCount > 0 else { return }
+
+    let targetIndex = viewControllers.count - min(count, maximumPopCount) - 1
+    navigationController.popToViewController(viewControllers[targetIndex], animated: animated)
   }
 
   // MARK: - Pop View to Root
   func popToRoot(animated: Bool = true) {
-    navigationController.popToRootViewController(animated: animated)
+    _activeNavigationController().popToRootViewController(animated: animated)
   }
 
   // MARK: - Replace View
   func replace<C: View>(_ views: [C], animated: Bool = true) {
     let viewControllers = views.map { _wrap($0) }
-    navigationController.setViewControllers(viewControllers, animated: animated)
+    _activeNavigationController().setViewControllers(viewControllers, animated: animated)
   }
 
   func replace(_ views: [AnyView], animated: Bool = true) {
     let viewControllers = views.map { _wrap($0) }
-    navigationController.setViewControllers(viewControllers, animated: animated)
+    _activeNavigationController().setViewControllers(viewControllers, animated: animated)
   }
 
   func replace(animated: Bool = true,
@@ -124,6 +149,7 @@ public extension FlowProvider {
   func moveView(from sourceIndex: Int,
                 to destinationIndex: Int,
                 animated: Bool = true) -> Bool {
+    let navigationController = _activeNavigationController()
     var viewControllers = navigationController.viewControllers
     guard viewControllers.indices.contains(sourceIndex) else { return false }
     guard destinationIndex >= 0, destinationIndex <= viewControllers.count else { return false }
@@ -137,16 +163,18 @@ public extension FlowProvider {
 
   @discardableResult
   func moveViewToTop(at index: Int, animated: Bool = true) -> Bool {
-    moveView(from: index,
-             to: navigationController.viewControllers.count - 1,
-             animated: animated)
+    let navigationController = _activeNavigationController()
+    return moveView(from: index,
+                    to: navigationController.viewControllers.count - 1,
+                    animated: animated)
   }
 
   @discardableResult
   func moveTopView(to index: Int, animated: Bool = true) -> Bool {
-    moveView(from: navigationController.viewControllers.count - 1,
-             to: index,
-             animated: animated)
+    let navigationController = _activeNavigationController()
+    return moveView(from: navigationController.viewControllers.count - 1,
+                    to: index,
+                    animated: animated)
   }
 
   @discardableResult
@@ -156,6 +184,7 @@ public extension FlowProvider {
 
   // MARK: - Reload View
   func reload(animated: Bool = false) {
+    let navigationController = _activeNavigationController()
     let lastViewController = navigationController.topViewController
     var currentViewControllers: [UIViewController] {
       navigationController.viewControllers.dropLast()
@@ -168,25 +197,25 @@ public extension FlowProvider {
 
   // MARK: - Sheet
   func sheet<C: View>(_ view: C, animated: Bool = true) {
-    navigationController.present(_wrap(view), animated: animated)
+    _presentingViewController().present(_wrap(view), animated: animated)
   }
 
   // MARK: - FullScreenCover
   func fullScreenCover<C: View>(_ view: C, animated: Bool = true) {
     let viewController = _wrap(view)
     viewController.modalPresentationStyle = .fullScreen
-    navigationController.present(viewController, animated: animated)
+    _presentingViewController().present(viewController, animated: animated)
   }
 
   // MARK: - Alert
   func alert(_ alert: Alert, animated: Bool = true) {
-    navigationController.present(alert.toAlertController(), animated: animated)
+    _presentingViewController().present(alert.toAlertController(), animated: animated)
   }
 
   // MARK: - Navigation Bar
   func setNavigationBarHidden(_ hidden: Bool, animated: Bool = true) {
     navigationBarHidden = hidden
-    navigationController.setNavigationBarHidden(hidden, animated: animated)
+    _activeNavigationController().setNavigationBarHidden(hidden, animated: animated)
   }
 
   func hideNavigationBar(animated: Bool = true) {
