@@ -3,12 +3,15 @@ import SwiftUI
 @available(iOS 13, *)
 @propertyWrapper
 public struct Flow: DynamicProperty {
-  
-  @EnvironmentObject private var object: FlowProvider
-  
+
+  @Environment(\.flowProvider) private var object
+
   public var wrappedValue: FlowProvider {
-    object
+    guard let object = object else {
+      preconditionFailure("FlowProvider is missing. Use FlowPresenter or apply .flowProvider(_:) to the view hierarchy.")
+    }
+    return object
   }
-  
+
   public init() { }
 }

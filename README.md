@@ -30,6 +30,9 @@ dependencies: [
 flow.push(NextView())
 // or
 flow.push(NextView(), animated: false)
+// Preserve a tab bar when pushing inside tab-based apps.
+flow.push(NextView(), preserveTabBar: true)
+flow.tabPush(NextView())
 ```
 - **Pop View**
 ```swift
@@ -42,11 +45,30 @@ flow.popToRoot()
 ```
 - **Replace Views**
 ```swift
-flow.replace([FirstView(), SecondView()])
+flow.replace([StepView(index: 1), StepView(index: 2)])
+// Heterogeneous view types can use the builder, variadic overloads, or AnyView.
+flow.replace {
+  FirstView()
+  SecondView()
+}
+flow.replace(FirstView(), SecondView())
+flow.replace([AnyView(FirstView()), AnyView(SecondView())])
+```
+- **Switch Views**
+```swift
+flow.switchToView(at: 0)
+flow.moveView(from: 0, to: 2)
+flow.moveTopView(to: 0)
 ```
 - **Reload View**
 ```swift
 flow.reload()
+```
+- **Navigation Bar**
+```swift
+FlowPresenter(rootView: ContentView(), navigationBarHidden: true)
+flow.hideNavigationBar()
+flow.showNavigationBar()
 ```
 - **Present Sheet**
 ```swift
@@ -58,6 +80,14 @@ let alert = Alert(title: "Error",
                   message: "Not Found",
                   dismissButton: .default("Ok"))
 flow.alert(alert)
+```
+- **Deep Link**
+```swift
+flow.registerDeepLink(.init(path: "/details") { url, flow in
+  flow.push(DetailView())
+})
+
+flow.openDeepLink(URL(string: "myapp://host/details")!)
 ```
 
 ## Example
@@ -99,6 +129,10 @@ struct NextView: View {
   }
 }
 ```
+
+`FlowPresenter` injects `FlowProvider` through a weak environment value, so pushed
+SwiftUI views can use `@Flow` without retaining the provider as an
+`EnvironmentObject`.
 
 ## [TCA](https://github.com/pointfreeco/swift-composable-architecture) Example
 ### Dependency
